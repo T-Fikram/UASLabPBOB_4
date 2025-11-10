@@ -17,4 +17,9 @@ public abstract class Akun {
 
     public void setNama(String nama) { this.nama = nama; }
     public void setPassword(String password) { this.password = password; }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + ", Nama: " + nama;
+    }
 }

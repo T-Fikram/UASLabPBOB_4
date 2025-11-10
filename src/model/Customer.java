@@ -1,9 +1,27 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Customer extends Akun {
+
+    private List<Integer> riwayatPesanan;
+
     public Customer(int id, String nama, String password) {
         super(id, nama, password);
+        this.riwayatPesanan = new ArrayList<>();
     }
 
-    // Nanti bisa ditambahkan method buat request pesanan
+    public List<Integer> getRiwayatPesanan() {
+        return riwayatPesanan;
+    }
+
+    public void tambahRiwayatPesanan(int idPesanan) {
+        riwayatPesanan.add(idPesanan);
+    }
+
+    @Override
+    public String toString() {
+        return "Customer: " + getNama();
+    }
 }

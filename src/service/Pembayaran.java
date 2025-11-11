@@ -2,11 +2,14 @@ package service;
 import java.util.Scanner;
 
 public interface Pembayaran {
+    int getIdPembayaran();
     void prosesPembayaran(double total);
 }
 
 class ProsesPembayaran implements Pembayaran {
 
+    private static int counter = 1; 
+    private final int idPembayaran;
     private double total;
     private String metode;
     private boolean status;
@@ -14,6 +17,12 @@ class ProsesPembayaran implements Pembayaran {
     public ProsesPembayaran(String metode) {
         this.metode = metode;
         this.status = false;
+        this.idPembayaran = counter++;
+    }
+
+    @Override
+    public int getIdPembayaran() {
+        return idPembayaran;
     }
 
     public double getTotal() {
@@ -39,8 +48,9 @@ class ProsesPembayaran implements Pembayaran {
 
         try {
             System.out.println("\n=== PEMBAYARAN ===");
-            System.out.println("Metode : " + metode);
-            System.out.println("Total  : Rp" + total);
+            System.out.println("ID Pembayaran : " + getIdPembayaran());
+            System.out.println("Metode        : " + metode);
+            System.out.println("Total         : Rp" + total);
 
             System.out.print("Konfirmasi pembayaran? (y/n): ");
             String confirm = input.nextLine();
@@ -60,3 +70,4 @@ class ProsesPembayaran implements Pembayaran {
         System.out.println("--------------------------------\n");
     }
 }
+

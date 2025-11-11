@@ -10,4 +10,9 @@ public class Pegawai extends Akun {
 
     public String getPeran() { return peran; }
     public void setPeran(String peran) { this.peran = peran; }
+
+    @Override
+    public String toString() {
+        return "Pegawai: " + getNama() + " (" + peran + ")";
+    }
 }

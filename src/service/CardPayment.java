@@ -1,37 +1,29 @@
-package service;
+package model;
+
 import java.util.Scanner;
 
 public class CardPayment implements Pembayaran {
-
-    private double total;
-    private boolean status;
+    private String nomorKartu;
+    private String namaPemilik;
 
     @Override
-    public void prosesPembayaran(double total) {
-        this.total = total;
-        Scanner input = new Scanner(System.in);
-
-        System.out.println("\n=== PEMBAYARAN KARTU ===");
-        System.out.println("Total  : Rp" + total);
-
+    public boolean prosesPembayaran(double total) throws Exception {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Masukkan nomor kartu: ");
-        String nomor = input.nextLine();
-
+        nomorKartu = scanner.nextLine();
         System.out.print("Masukkan nama pemilik kartu: ");
-        String nama = input.nextLine();
+        namaPemilik = scanner.nextLine();
 
-        System.out.print("Konfirmasi pembayaran? (y/n): ");
-        String confirm = input.nextLine();
-
-        if (confirm.equalsIgnoreCase("y")) {
-            System.out.println("✅ Pembayaran berhasil menggunakan kartu " + nama);
-            status = true;
-        } else {
-            System.out.println("❌ Pembayaran dibatalkan oleh pengguna.");
-            status = false;
+        if (nomorKartu.length() < 10) {
+            throw new Exception("Nomor kartu tidak valid!");
         }
 
-        System.out.println("Status transaksi : " + (status ? "Berhasil" : "Gagal"));
-        System.out.println("--------------------------------\n");
+        System.out.println("Pembayaran menggunakan kartu berhasil.");
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Metode Pembayaran: Kartu";
     }
 }

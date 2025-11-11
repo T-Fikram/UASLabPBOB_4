@@ -1,32 +1,27 @@
-package service;
+package model;
+
 import java.util.Scanner;
 
 public class CashPayment implements Pembayaran {
-
-    private double total;
-    private boolean status;
+    private double jumlahDibayar;
 
     @Override
-    public void prosesPembayaran(double total) {
-       this.total = total;
-        Scanner input = new Scanner(System.in);
-
-        System.out.println("\n=== PEMBAYARAN TUNAI ===");
-        System.out.println("Total  : Rp" + total);
+    public boolean prosesPembayaran(double total) throws Exception {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Masukkan jumlah uang tunai: Rp");
-        double uang = input.nextDouble();
+        jumlahDibayar = scanner.nextDouble();
 
-        if (uang < total) {
-            System.out.println("❌ Uang tidak cukup, pembayaran dibatalkan.");
-            status = false;
-        } else {
-            double kembalian = uang - total;
-            System.out.println("✅ Pembayaran tunai berhasil!");
-            System.out.println("Kembalian: Rp" + kembalian);
-            status = true;
+        if (jumlahDibayar < total) {
+            throw new Exception("Uang tidak cukup untuk membayar total pesanan!");
         }
 
-        System.out.println("Status transaksi : " + (status ? "Berhasil" : "Gagal"));
-        System.out.println("--------------------------------\n");
+        double kembalian = jumlahDibayar - total;
+        System.out.printf("Pembayaran berhasil. Kembalian: Rp%.0f\n", kembalian);
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Metode Pembayaran: Cash";
     }
 }

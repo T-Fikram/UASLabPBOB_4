@@ -25,4 +25,11 @@ public class Pesanan {
     public void addDetail(DetailPesanan d) {
         daftarItem.add(d);
     }
+    public double hitungTotal() {
+        double total = 0;
+        for (DetailPesanan item : daftarItem) {
+            total += item.getItem().getHarga() * item.getJumlah();
+        }
+        return total;
+    }
 }

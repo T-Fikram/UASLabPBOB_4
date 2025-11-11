@@ -12,4 +12,12 @@ public class Minuman extends MenuItem {
 
     public String getUkuran() { return ukuran; }
     public String getSuhu() { return suhu; }
+    
+    @Override
+    public String toString() {
+        return "Minuman: " + getNama() +
+            " | Harga: Rp" + getHarga() +
+            " | Ukuran: " + ukuran +
+            " | Suhu: " + suhu;
+    }
 }

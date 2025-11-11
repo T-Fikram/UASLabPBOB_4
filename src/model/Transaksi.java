@@ -8,11 +8,11 @@ public class Transaksi {
     private String metodePembayaran;
     private LocalDateTime waktu;
 
-    public Transaksi(Pesanan pesanan, double total, String metodePembayaran) {
+    public Transaksi(Pesanan pesanan, String metodePembayaran) {
         this.pesanan = pesanan;
-        this.total = total;
         this.metodePembayaran = metodePembayaran;
         this.waktu = LocalDateTime.now();
+        this.total = hitungTotal(); // otomatis hitung total saat transaksi dibuat
     }
 
     public Pesanan getPesanan() {
@@ -29,5 +29,21 @@ public class Transaksi {
 
     public LocalDateTime getWaktu() {
         return waktu;
+    }
+
+    // Hitung total dari semua detail pesanan
+    private double hitungTotal() {
+        return pesanan.getDaftarItem().stream()
+                .mapToDouble(d -> d.getItem().getHarga() * d.getJumlah())
+                .sum();
+    }
+
+    @Override
+    public String toString() {
+        return "=== DATA TRANSAKSI ===\n" +
+                "ID Pesanan: " + pesanan.getIdPesanan() + "\n" +
+                "Total: Rp" + total + "\n" +
+                "Metode Pembayaran: " + metodePembayaran + "\n" +
+                "Waktu: " + waktu + "\n";
     }
 }

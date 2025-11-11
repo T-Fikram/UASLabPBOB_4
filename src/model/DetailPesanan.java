@@ -14,4 +14,10 @@ public class DetailPesanan {
     public MenuItem getItem() { return item; }
     public int getJumlah() { return jumlah; }
     public String getCatatan() { return catatan; }
+
+    @Override
+    public String toString() {
+        return item.getInfo() + " x" + jumlah + 
+            (catatan.isEmpty() ? "" : " (" + catatan + ")");
+    }
 }

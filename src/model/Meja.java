@@ -1,15 +1,33 @@
 package model;
 
 public class Meja {
+
+    public enum StatusMeja {
+        KOSONG, TERISI
+    }
+
     private int nomor;
-    private String status; // "kosong" atau "terisi"
+    private StatusMeja status;
 
     public Meja(int nomor) {
         this.nomor = nomor;
-        this.status = "kosong";
+        this.status = StatusMeja.KOSONG; // default
     }
 
-    public int getNomor() { return nomor; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public int getNomor() { 
+        return nomor; 
+    }
+
+    public StatusMeja getStatus() { 
+        return status; 
+    }
+
+    public void setStatus(StatusMeja status) { 
+        this.status = status; 
+    }
+
+    @Override
+    public String toString() {
+        return "Meja " + nomor + " - Status: " + status;
+    }
 }

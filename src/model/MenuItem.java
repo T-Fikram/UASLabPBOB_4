@@ -15,4 +15,9 @@ public abstract class MenuItem {
     public String getInfo() {
         return nama + " - Rp" + harga;
     }
+
+    @Override
+    public String toString() {
+        return getInfo();
+    }
 }

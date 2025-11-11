@@ -12,4 +12,12 @@ public class Makanan extends MenuItem {
 
     public int getTingkatPedas() { return tingkatPedas; }
     public String getKategori() { return kategori; }
+
+    @Override
+    public String toString() {
+        return "Makanan: " + getNama() + 
+            " | Harga: Rp" + getHarga() +
+            " | Level Pedas: " + tingkatPedas +
+            " | Kategori: " + kategori;
+    }
 }

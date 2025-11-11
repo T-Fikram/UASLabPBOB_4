@@ -38,6 +38,7 @@ Membuat sistem yang dapat mengelola aktivitas restoran mulai dari:
 
 ---
 
+```
 ## 🧩 Struktur Package
 src/
 ├── model/
@@ -58,7 +59,7 @@ src/
 ├── CardPayment.java
 ├── QRISPayment.java
 └── RestaurantSystem.java
-
+```
 ---
 
 ## 💡 Konsep OOP yang Diterapkan

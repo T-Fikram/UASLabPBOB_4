@@ -1,5 +1,11 @@
 package model;
 
+import model.Pegawai;
+import model.Pesanan;
+import model.MenuItem;
+import model.Struk;
+import model.Transaksi;
+import model.Pembayaran;
 import java.util.ArrayList;
 import java.util.List;
 

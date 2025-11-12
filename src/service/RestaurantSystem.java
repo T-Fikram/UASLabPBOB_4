@@ -83,4 +83,9 @@ public class RestaurantSystem {
     public List<Pesanan> getDaftarPesanan() {
         return new ArrayList<>(daftarPesanan);
     }
+
+    public List<Pegawai> getDaftarPegawai() {
+    return new ArrayList<>(daftarPegawai);
+    }
+
 }

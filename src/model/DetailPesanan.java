@@ -6,18 +6,34 @@ public class DetailPesanan {
     private String catatan;
 
     public DetailPesanan(MenuItem item, int jumlah, String catatan) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item pesanan tidak boleh null");
+        }
+
+        if (jumlah <= 0) {
+            throw new IllegalArgumentException("Jumlah pesanan harus lebih dari 0");
+        }
+
         this.item = item;
         this.jumlah = jumlah;
-        this.catatan = catatan;
+        this.catatan = (catatan == null) ? "" : catatan.trim();
     }
 
-    public MenuItem getItem() { return item; }
-    public int getJumlah() { return jumlah; }
-    public String getCatatan() { return catatan; }
+    public MenuItem getItem() {
+        return item;
+    }
+
+    public int getJumlah() {
+        return jumlah;
+    }
+
+    public String getCatatan() {
+        return catatan;
+    }
 
     @Override
     public String toString() {
-        return item.getInfo() + " x" + jumlah + 
-            (catatan.isEmpty() ? "" : " (" + catatan + ")");
+        return item.getInfo() + " x" + jumlah +
+               (catatan.isEmpty() ? "" : " (" + catatan + ")");
     }
 }

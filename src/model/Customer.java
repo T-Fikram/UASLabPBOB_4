@@ -17,6 +17,12 @@ public class Customer extends Akun {
     }
 
     public void tambahRiwayatPesanan(int idPesanan) {
+        if (idPesanan <= 0) {
+            throw new IllegalArgumentException("ID pesanan harus lebih dari 0");
+        }
+        if (riwayatPesanan.contains(idPesanan)) {
+            throw new IllegalArgumentException("ID pesanan sudah ada di riwayat");
+        }
         riwayatPesanan.add(idPesanan);
     }
 

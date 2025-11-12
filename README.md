@@ -9,9 +9,9 @@ Aplikasi ini dibuat menggunakan bahasa **Java** dengan konsep **Object-Oriented 
 | Nama | NIM |
 |------|-----|
 | Inayah Kamila Nurman | 2408107010060 |
-| Teuku Fikram Al Syahbanna | 24081070100 | 
-| Ahmad Daniel Chalid | 24081070100 | 
-| Cut Mutia Rahmah | 24081070100 |
+| Teuku Fikram Al Syahbanna | 2408107010044 | 
+| Ahmad Daniel Chalid | 2408107010061 | 
+| Cut Mutia Rahmah | 2408107010062 |
 
 ---
 

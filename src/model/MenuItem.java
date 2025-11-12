@@ -5,7 +5,14 @@ public abstract class MenuItem {
     private double harga;
 
     public MenuItem(String nama, double harga) {
-        this.nama = nama;
+        if (nama == null || nama.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nama menu tidak boleh kosong");
+        }
+        if (harga <= 0) {
+            throw new IllegalArgumentException("Harga harus lebih dari 0");
+        }
+
+        this.nama = nama.trim();
         this.harga = harga;
     }
 

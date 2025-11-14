@@ -41,7 +41,7 @@ public class Main {
         }
     }
 
-    // -------------- SEED DATA ----------------
+    // SEED DATA 
     private static void seedData() {
         system.tambahMenu(new Makanan("Nasi Goreng", 20000, 2, "Main Course"));
         system.tambahMenu(new Makanan("Mie Ayam", 18000, 1, "Main Course"));
@@ -56,7 +56,7 @@ public class Main {
         customerList.add(new Customer(102, "Doni", "222"));
     }
 
-    // -------------- LOGIN ----------------
+    // LOGIN 
     private static Pegawai loginPegawai() {
         System.out.print("Nama pegawai: ");
         String nama = scanner.nextLine();
@@ -100,7 +100,7 @@ public class Main {
         return null;
     }
 
-    // -------------- MENU UTAMA PEGawai ----------------
+    // MENU UTAMA PEGAWAI
     private static void handlePegawaiMenu(Pegawai pegawai) {
         String role = pegawai.getPeran().toLowerCase();
         if ("pelayan".equals(role)) {
@@ -114,7 +114,7 @@ public class Main {
         }
     }
 
-    // ----- Pelayan -----
+    // PELAYAN
     private static void pelayanMenu(Pegawai pelayan) {
         while (true) {
             System.out.println("\n=== MENU PELAYAN ===");
@@ -212,7 +212,7 @@ public class Main {
         System.out.println("✅ Pesanan dibuat. ID Pesanan: " + pesanan.getIdPesanan());
     }
 
-    // ----- Koki -----
+    // KOKI
     private static void kokiMenu(Pegawai koki) {
         while (true) {
             System.out.println("\n=== MENU KOKI ===");
@@ -248,7 +248,7 @@ public class Main {
         }
     }
 
-    // ----- Kasir -----
+    // KASIR
     private static void kasirMenu(Pegawai kasir) {
         while (true) {
             System.out.println("\n=== MENU KASIR ===");
@@ -351,7 +351,7 @@ public class Main {
         }
     }
     
-    // -------------- MENU CUSTOMER ----------------
+    // MENU CUSTOMER
     private static void handleCustomerMenu(Customer cust) {
         while (true) {
             System.out.println("\n=== MENU CUSTOMER (" + cust.getNama() + ") ===");
@@ -435,7 +435,7 @@ public class Main {
         System.out.println("Pesanan dibuat. ID Pesanan: " + pesanan.getIdPesanan());
     }
 
-    // -------------- BANTUAN / UTILS ----------------
+    // BANTUAN / UTILS 
     private static int readInt() {
         int val = -1;
         try {

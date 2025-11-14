@@ -256,30 +256,40 @@ public class Main {
             System.out.println("2. Logout");
             System.out.print("Pilih: ");
             int p = readInt();
-
+    
             if (p == 1) {
                 List<Pesanan> daftar = system.getDaftarPesanan();
                 boolean ada = false;
+    
+                // Tampilkan hanya pesanan yang siap dibayar
                 for (Pesanan ps : daftar) {
-                    // hanya tunjukkan pesanan yang statusnya Selesai (dimasak)
-                    if ("Selesai".equalsIgnoreCase(ps.getStatus()) || "Selesai dimasak".equalsIgnoreCase(ps.getStatus())) {
+                    if ("Selesai".equalsIgnoreCase(ps.getStatus())) {
                         ada = true;
-                        System.out.println("ID: " + ps.getIdPesanan() + " | Meja: " + ps.getMeja().getNomor() + " | Total: Rp" + ps.hitungTotal());
+                        System.out.println("ID: " + ps.getIdPesanan() + " | Meja: " 
+                            + ps.getMeja().getNomor() + " | Total: Rp" + ps.hitungTotal());
                     }
                 }
+    
                 if (!ada) {
                     System.out.println("Belum ada pesanan yang siap dibayar.");
                     continue;
                 }
-
+    
                 System.out.print("Masukkan ID pesanan yang akan dibayar: ");
                 int id = readInt();
                 Pesanan ps = findPesananById(id);
+    
                 if (ps == null) {
                     System.out.println("Pesanan tidak ditemukan.");
                     continue;
                 }
-
+    
+                // ❗ Cegah pembayaran ulang
+                if (!"Selesai".equalsIgnoreCase(ps.getStatus())) {
+                    System.out.println("Pesanan ini tidak bisa dibayar (status: " + ps.getStatus() + ").");
+                    continue;
+                }
+    
                 System.out.println("Total yang harus dibayar: Rp" + ps.hitungTotal());
                 System.out.println("Pilih metode pembayaran:");
                 System.out.println("1. Cash");
@@ -287,24 +297,40 @@ public class Main {
                 System.out.println("3. QRIS");
                 System.out.print("Pilihan: ");
                 int m = readInt();
-
+    
                 Pembayaran metode = null;
-                if (m == 1) metode = new CashPayment();
-                else if (m == 2) metode = new CardPayment();
-                else if (m == 3) metode = new QRISPayment();
-                else {
+                String metodeString = "";
+    
+                if (m == 1) {
+                    metode = new CashPayment();
+                    metodeString = "cash";
+                } else if (m == 2) {
+                    metode = new CardPayment();
+                    metodeString = "card";
+                } else if (m == 3) {
+                    metode = new QRISPayment();
+                    metodeString = "qris";
+                } else {
                     System.out.println("Metode tidak valid.");
                     continue;
                 }
-
+    
                 try {
                     boolean sukses = metode.prosesPembayaran(ps.hitungTotal());
+    
                     if (sukses) {
-                        Transaksi trx = new Transaksi(ps, metode.toString());
+    
+                        // ❗ Buat transaksi sebelum status berubah
+                        Transaksi trx = new Transaksi(ps, metodeString);
+    
+                        // Cetak struk
                         Struk struk = new Struk(trx);
                         struk.cetak();
-                        ps.setStatus("Lunas");
+    
+                        // Baru setelah selesai -> ubah status
+                        ps.setStatus("Selesai");
                         ps.getMeja().setStatus(Meja.StatusMeja.KOSONG);
+    
                         System.out.println("Pembayaran sukses. ID Pembayaran: " + metode.getIdPembayaran());
                     } else {
                         System.out.println("Pembayaran gagal.");
@@ -312,15 +338,19 @@ public class Main {
                 } catch (Exception e) {
                     System.out.println("Error saat pembayaran: " + e.getMessage());
                 }
-            } else if (p == 2) {
+            }
+    
+            else if (p == 2) {
                 System.out.println("Logout kasir.");
                 break;
-            } else {
+            }
+    
+            else {
                 System.out.println("Pilihan tidak valid.");
             }
         }
     }
-
+    
     // -------------- MENU CUSTOMER ----------------
     private static void handleCustomerMenu(Customer cust) {
         while (true) {

@@ -284,11 +284,12 @@ public class Main {
                     continue;
                 }
     
-                // ❗ Cegah pembayaran ulang
-                if (!"Selesai".equalsIgnoreCase(ps.getStatus())) {
-                    System.out.println("Pesanan ini tidak bisa dibayar (status: " + ps.getStatus() + ").");
-                    continue;
+                // Cegah pembayaran ulang
+                if (ps.getMeja().getStatus() == Meja.StatusMeja.KOSONG) {
+                System.out.println("Pesanan ini sudah dibayar.");
+                continue;
                 }
+
     
                 System.out.println("Total yang harus dibayar: Rp" + ps.hitungTotal());
                 System.out.println("Pilih metode pembayaran:");
@@ -320,7 +321,7 @@ public class Main {
     
                     if (sukses) {
     
-                        // ❗ Buat transaksi sebelum status berubah
+                        //  Buat transaksi sebelum status berubah
                         Transaksi trx = new Transaksi(ps, metodeString);
     
                         // Cetak struk
@@ -328,7 +329,6 @@ public class Main {
                         struk.cetak();
     
                         // Baru setelah selesai -> ubah status
-                        ps.setStatus("Selesai");
                         ps.getMeja().setStatus(Meja.StatusMeja.KOSONG);
     
                         System.out.println("Pembayaran sukses. ID Pembayaran: " + metode.getIdPembayaran());

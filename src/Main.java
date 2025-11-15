@@ -63,13 +63,12 @@ public class Main {
         System.out.print("Password: ");
         String pass = scanner.nextLine();
 
-        // Note: class RestaurantSystem yang kamu sertakan sebelumnya harus menyediakan getDaftarPegawai().
-        // Jika belum ada, tambahkan public List<Pegawai> getDaftarPegawai() { return new ArrayList<>(daftarPegawai); }
+
         List<Pegawai> daftar = null;
         try {
             daftar = system.getDaftarPegawai();
         } catch (Throwable t) {
-            // jika getter tidak tersedia, kita handle gracefully
+
             System.out.println("⚠️ RestaurantSystem belum memiliki getter daftar pegawai. Pastikan ada method getDaftarPegawai().");
             return null;
         }
@@ -186,7 +185,7 @@ public class Main {
             MenuItem item = daftarMenu.get(pilihMenu - 1);
             System.out.print("Jumlah: ");
             int jumlah = readInt();
-            scanner.nextLine(); // buang newline
+            scanner.nextLine(); 
             System.out.print("Catatan (opsional): ");
             String catatan = scanner.nextLine();
 
@@ -207,7 +206,7 @@ public class Main {
         try {
             cust.tambahRiwayatPesanan(pesanan.getIdPesanan());
         } catch (IllegalArgumentException e) {
-            // jika riwayat duplikat, abaikan tetapi tetap simpan pesanan
+            // jika riwayat duplikat tetap simpan pesanan
         }
         System.out.println("✅ Pesanan dibuat. ID Pesanan: " + pesanan.getIdPesanan());
     }
@@ -441,7 +440,7 @@ public class Main {
         try {
             val = Integer.parseInt(scanner.nextLine());
         } catch (Exception e) {
-            // kembalikan -1 jika input bukan integer
+            
         }
         return val;
     }

@@ -103,13 +103,6 @@ public class Main {
         system.tambahMenu(new Makanan("Mie Ayam", 18000, 1, "Main Course"));
         system.tambahMenu(new Minuman("Es Teh", 5000, "Gelas", "Dingin"));
         system.tambahMenu(new Minuman("Kopi Hitam", 8000, "Cangkir", "Panas"));
-
-        system.tambahPegawai(new Pegawai(1, "Andi", "123", "pelayan"));
-        system.tambahPegawai(new Pegawai(2, "Budi", "123", "koki"));
-        system.tambahPegawai(new Pegawai(3, "Citra", "123", "kasir"));
-
-        customerList.add(new Customer(101, "Rina", "111"));
-        customerList.add(new Customer(102, "Doni", "222"));
     }
 
     // LOGIN 

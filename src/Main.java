@@ -1,6 +1,8 @@
 import model.*;
 import service.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -18,6 +20,8 @@ public class Main {
             System.out.println("\n--- Layar Login ---");
             System.out.println("1. Login Pegawai");
             System.out.println("2. Login Customer");
+            System.out.println("3. Sign Up Customer"); 
+            System.out.println("4. Sign Up Pegawai");  
             System.out.println("0. Keluar");
             System.out.print("Pilih: ");
             int pilihan = readInt();
@@ -25,23 +29,75 @@ public class Main {
             if (pilihan == 0) {
                 System.out.println("Keluar. Terima kasih!");
                 break;
-            } else if (pilihan == 1) {
+            } 
+            else if (pilihan == 1) {
                 Pegawai pegawai = loginPegawai();
-                if (pegawai != null) {
-                    handlePegawaiMenu(pegawai);
-                }
-            } else if (pilihan == 2) {
+                if (pegawai != null) handlePegawaiMenu(pegawai);
+            } 
+            else if (pilihan == 2) {
                 Customer cust = loginCustomer();
-                if (cust != null) {
-                    handleCustomerMenu(cust);
-                }
-            } else {
+                if (cust != null) handleCustomerMenu(cust);
+            } 
+            else if (pilihan == 3) {
+                signUpCustomer();    
+            }
+            else if (pilihan == 4) {
+                signUpPegawai();    
+            }
+            else {
                 System.out.println("Pilihan tidak valid, coba lagi.");
             }
         }
     }
 
-    // SEED DATA 
+    //  SIGN UP CUSTOMER
+    private static void signUpCustomer() {
+        System.out.println("\n=== SIGN UP CUSTOMER ===");
+        System.out.print("Masukkan nama: ");
+        String nama = scanner.nextLine();
+        System.out.print("Masukkan password: ");
+        String pass = scanner.nextLine();
+
+        int newId = 100 + customerList.size() + 1;
+        Customer cust = new Customer(newId, nama, pass);
+        customerList.add(cust);
+
+        saveToDatabase("CUSTOMER|" + newId + "|" + nama + "|" + pass);
+
+        System.out.println("Akun customer berhasil dibuat! ID Anda: " + newId);
+    }
+
+    //  SIGN UP PEGAWAI
+    private static void signUpPegawai() {
+        System.out.println("\n=== SIGN UP PEGAWAI ===");
+        System.out.print("Masukkan nama: ");
+        String nama = scanner.nextLine();
+        System.out.print("Masukkan password: ");
+        String pass = scanner.nextLine();
+        System.out.print("Masukkan peran (pelayan/koki/kasir): ");
+        String peran = scanner.nextLine();
+
+        int newId = system.getDaftarPegawai().size() + 1;
+        Pegawai pegawai = new Pegawai(newId, nama, pass, peran);
+        system.tambahPegawai(pegawai);
+
+        saveToDatabase("PEGAWAI|" + newId + "|" + nama + "|" + pass + "|" + peran);
+
+        System.out.println("Akun pegawai berhasil dibuat! ID: " + newId);
+    }
+
+    //  SIMPAN KE DATABASE.TXT
+    private static void saveToDatabase(String data) {
+        try (FileWriter writer = new FileWriter("database.txt", true)) {
+            writer.write(data + "\n");
+        } catch (IOException e) {
+            System.out.println("Gagal menyimpan ke file: " + e.getMessage());
+        }
+    }
+
+
+    // SEED DATA
+
     private static void seedData() {
         system.tambahMenu(new Makanan("Nasi Goreng", 20000, 2, "Main Course"));
         system.tambahMenu(new Makanan("Mie Ayam", 18000, 1, "Main Course"));
@@ -63,15 +119,7 @@ public class Main {
         System.out.print("Password: ");
         String pass = scanner.nextLine();
 
-
-        List<Pegawai> daftar = null;
-        try {
-            daftar = system.getDaftarPegawai();
-        } catch (Throwable t) {
-
-            System.out.println("⚠️ RestaurantSystem belum memiliki getter daftar pegawai. Pastikan ada method getDaftarPegawai().");
-            return null;
-        }
+        List<Pegawai> daftar = system.getDaftarPegawai();
 
         for (Pegawai p : daftar) {
             if (p.getNama().equalsIgnoreCase(nama) && p.getPassword().equals(pass)) {
@@ -98,7 +146,7 @@ public class Main {
         System.out.println("Customer tidak ditemukan / password salah.");
         return null;
     }
-
+    
     // MENU UTAMA PEGAWAI
     private static void handlePegawaiMenu(Pegawai pegawai) {
         String role = pegawai.getPeran().toLowerCase();

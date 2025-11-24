@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import service.RestaurantSystem;
 
-public class DashboardPegawaiGUI extends JFrame {
+public class DashboardGUI extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel mainPanel;

@@ -1,131 +1,154 @@
-package gui;
-
-import model.*;
-import service.RestaurantSystem;
+package GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.List;
 
-public class PaymentGUI extends JFrame {
-    private RestaurantSystem system;
-    private JComboBox<String> orderBox;
-    private JTextArea detailArea;
-    private JTextField totalField;
-    private JComboBox<String> paymentMethod;
+public class PaymentReceiptGUI extends JFrame {
 
-    public PaymentGUI(RestaurantSystem system) {
-        this.system = system;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
-        setTitle("Payment - Kasir");
-        setSize(500, 400);
+    private JComboBox<String> pesananDropdown;
+    private JComboBox<String> metodeDropdown;
+
+    private JTextField cashField;
+    private JTextField cardNumberField;
+    private JTextField cardNameField;
+
+    private JLabel receiptLabel;
+
+    public PaymentReceiptGUI() {
+        setTitle("Payment & Receipt");
+        setSize(500, 450);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        loadUI();
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
+
+        // Panel
+        mainPanel.add(selectOrderPanel(), "selectOrder");
+        mainPanel.add(paymentPanel(), "payment");
+        mainPanel.add(receiptPanel(), "receipt");
+
+        add(mainPanel);
+        setVisible(true);
     }
 
-    private void loadUI() {
+    private JPanel selectOrderPanel() {
+        JPanel panel = new JPanel(new GridLayout(4, 1, 10, 10));
+
+        JLabel title = new JLabel("PILIH PESANAN", SwingConstants.CENTER);
+
+        pesananDropdown = new JComboBox<>();
+        pesananDropdown.addItem("Pesanan #1 - Rp50000");
+        pesananDropdown.addItem("Pesanan #2 - Rp32000");
+        pesananDropdown.addItem("Pesanan #3 - Rp45000");
+
+        JButton btnNext = new JButton("Lanjut ke Pembayaran");
+        JButton btnExit = new JButton("Kembali");
+
+        panel.add(title);
+        panel.add(pesananDropdown);
+        panel.add(btnNext);
+        panel.add(btnExit);
+
+        btnNext.addActionListener(e -> cardLayout.show(mainPanel, "payment"));
+        btnExit.addActionListener(e -> dispose());
+
+        return panel;
+    }
+
+    private JPanel paymentPanel() {
+        JPanel panel = new JPanel(new GridLayout(10, 1, 5, 5));
+
+        JLabel title = new JLabel("METODE PEMBAYARAN", SwingConstants.CENTER);
+
+        metodeDropdown = new JComboBox<>();
+        metodeDropdown.addItem("Cash");
+        metodeDropdown.addItem("Card");
+        metodeDropdown.addItem("QRIS");
+
+        cashField = new JTextField();
+        cardNumberField = new JTextField();
+        cardNameField = new JTextField();
+
+        JButton btnPay = new JButton("Bayar");
+        JButton btnBack = new JButton("Kembali");
+
+        panel.add(title);
+        panel.add(new JLabel("Metode:"));
+        panel.add(metodeDropdown);
+        panel.add(new JLabel("Jumlah Cash (jika Cash):"));
+        panel.add(cashField);
+        panel.add(new JLabel("Nomor Kartu (jika Card):"));
+        panel.add(cardNumberField);
+        panel.add(new JLabel("Nama Pemilik (jika Card):"));
+        panel.add(cardNameField);
+        panel.add(btnPay);
+        panel.add(btnBack);
+
+        btnPay.addActionListener(e -> processPayment());
+        btnBack.addActionListener(e -> cardLayout.show(mainPanel, "selectOrder"));
+
+        return panel;
+    }
+
+    private JPanel receiptPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Top: Pesanan siap bayar
-        JPanel top = new JPanel(new GridLayout(2, 1));
-        orderBox = new JComboBox<>();
-        loadOrders();
-        top.add(new JLabel("Pilih Pesanan:"));
-        top.add(orderBox);
-        panel.add(top, BorderLayout.NORTH);
+        JLabel title = new JLabel("STRUK PEMBAYARAN", SwingConstants.CENTER);
 
-        // Middle: Detail pesanan
-        detailArea = new JTextArea();
-        detailArea.setEditable(false);
-        panel.add(new JScrollPane(detailArea), BorderLayout.CENTER);
+        receiptLabel = new JLabel("", SwingConstants.CENTER);
 
-        // Bottom: Payment section
-        JPanel bottom = new JPanel(new GridLayout(4, 2));
-        bottom.add(new JLabel("Total: "));
-        totalField = new JTextField();
-        totalField.setEditable(false);
-        bottom.add(totalField);
+        JButton btnFinish = new JButton("Selesai");
 
-        bottom.add(new JLabel("Metode Pembayaran:"));
-        paymentMethod = new JComboBox<>(new String[]{"Cash", "Card", "QRIS"});
-        bottom.add(paymentMethod);
+        panel.add(title, BorderLayout.NORTH);
+        panel.add(receiptLabel, BorderLayout.CENTER);
+        panel.add(btnFinish, BorderLayout.SOUTH);
 
-        JButton payButton = new JButton("Bayar");
-        bottom.add(payButton);
+        btnFinish.addActionListener(e -> dispose());
 
-        panel.add(bottom, BorderLayout.SOUTH);
-
-        add(panel);
-
-        orderBox.addActionListener(e -> showOrderDetail());
-        payButton.addActionListener(this::processPayment);
+        return panel;
     }
 
-    private void loadOrders() {
-        for (Pesanan p : system.getDaftarPesanan()) {
-            if ("Selesai".equalsIgnoreCase(p.getStatus())) {
-                orderBox.addItem(p.getIdPesanan() + " - Meja " + p.getMeja().getNomor());
+    private void processPayment() {
+        String metode = (String) metodeDropdown.getSelectedItem();
+        String pesanan = (String) pesananDropdown.getSelectedItem();
+
+        if (metode.equals("Cash")) {
+            if (cashField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "⚠️ Masukkan jumlah uang!");
+                return;
             }
+            JOptionPane.showMessageDialog(this, "✅ Pembayaran Cash Berhasil!");
+
+        } else if (metode.equals("Card")) {
+            if (cardNumberField.getText().length() < 10) {
+                JOptionPane.showMessageDialog(this, "⚠️ Nomor kartu minimal 10 digit!");
+                return;
+            }
+            if (cardNameField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "⚠️ Nama pemilik wajib diisi!");
+                return;
+            }
+            JOptionPane.showMessageDialog(this, "✅ Pembayaran Card Berhasil!");
+
+        } else if (metode.equals("QRIS")) {
+            JOptionPane.showMessageDialog(this, "✅ QRIS Terscan & Berhasil!");
         }
+
+        // Tampilkan struk
+        receiptLabel.setText("<html>"
+                + "Pesanan: " + pesanan + "<br>"
+                + "Metode: " + metode + "<br>"
+                + "Status: Lunas ✅"
+                + "</html>");
+
+        cardLayout.show(mainPanel, "receipt");
     }
 
-    private void showOrderDetail() {
-        detailArea.setText("");
-        totalField.setText("");
-
-        int idx = orderBox.getSelectedIndex();
-        if (idx < 0) return;
-
-        String selected = (String) orderBox.getSelectedItem();
-        int id = Integer.parseInt(selected.split(" - ")[0]);
-
-        Pesanan ps = system.getDaftarPesanan().stream()
-                .filter(p -> p.getIdPesanan() == id)
-                .findFirst().orElse(null);
-        if (ps == null) return;
-
-        for (DetailPesanan d : ps.getDaftarItem()) {
-            detailArea.append(d.getItem().getNama() + " x" + d.getJumlah() + "\n");
-        }
-        detailArea.append("\nStatus: " + ps.getStatus());
-
-        totalField.setText("Rp" + ps.hitungTotal());
-    }
-
-    private void processPayment(ActionEvent e) {
-        String selected = (String) orderBox.getSelectedItem();
-        if (selected == null) {
-            JOptionPane.showMessageDialog(this, "Tidak ada pesanan.");
-            return;
-        }
-
-        int id = Integer.parseInt(selected.split(" - ")[0]);
-        Pesanan ps = system.getDaftarPesanan().stream()
-                .filter(p -> p.getIdPesanan() == id)
-                .findFirst().orElse(null);
-
-        if (ps == null) return;
-
-        // Tentukan metode pembayaran
-        Pembayaran metode = switch (paymentMethod.getSelectedIndex()) {
-            case 0 -> new CashPayment();
-            case 1 -> new CardPayment();
-            case 2 -> new QRISPayment();
-            default -> null;
-        };
-
-        if (metode == null) return;
-
-        boolean success = metode.prosesPembayaran(ps.hitungTotal());
-        if (success) {
-            ps.getMeja().setStatus(Meja.StatusMeja.KOSONG);
-            JOptionPane.showMessageDialog(this, "Pembayaran berhasil! ID Pembayaran: " + metode.getIdPembayaran());
-            dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Pembayaran gagal!");
-        }
+    public static void main(String[] args) {
+        new PaymentReceiptGUI();
     }
 }

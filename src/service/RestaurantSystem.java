@@ -5,15 +5,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantSystem {
+
     private List<MenuItem> daftarMenu;
     private List<Pegawai> daftarPegawai;
     private List<Pesanan> daftarPesanan;
+
+    // 🔥 Tambahan untuk login/register
+    private List<User> daftarUser;
 
     public RestaurantSystem() {
         daftarMenu = new ArrayList<>();
         daftarPegawai = new ArrayList<>();
         daftarPesanan = new ArrayList<>();
+        daftarUser = new ArrayList<>();
     }
+
+    // =============================
+    // ====== LOGIN SYSTEM =========
+    // =============================
+
+    public boolean register(String username, String password) {
+        // Cek apakah username sudah ada
+        for (User u : daftarUser) {
+            if (u.getUsername().equals(username)) {
+                return false; // duplikat
+            }
+        }
+
+        daftarUser.add(new User(username, password));
+        return true;
+    }
+
+    public boolean login(String username, String password) {
+        for (User u : daftarUser) {
+            if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
+                return true; // berhasil login
+            }
+        }
+        return false;
+    }
+
+    public List<User> getDaftarUser() {
+        return daftarUser;
+    }
+
+    // =============================
+    // ====== MENU SYSTEM ==========
+    // =============================
 
     public void tambahMenu(MenuItem item) {
         if (item == null) {
@@ -34,6 +72,14 @@ public class RestaurantSystem {
         }
     }
 
+    public List<MenuItem> getDaftarMenu() {
+        return new ArrayList<>(daftarMenu);
+    }
+
+    // =============================
+    // ==== PEGAWAI SYSTEM =========
+    // =============================
+
     public void tambahPegawai(Pegawai p) {
         if (p == null) {
             System.out.println("❌ Pegawai tidak boleh null!");
@@ -42,6 +88,14 @@ public class RestaurantSystem {
         daftarPegawai.add(p);
     }
 
+    public List<Pegawai> getDaftarPegawai() {
+        return new ArrayList<>(daftarPegawai);
+    }
+
+    // =============================
+    // ===== PESANAN SYSTEM ========
+    // =============================
+
     public void tambahPesanan(Pesanan p) {
         if (p == null) {
             System.out.println("❌ Pesanan tidak boleh null!");
@@ -49,6 +103,14 @@ public class RestaurantSystem {
         }
         daftarPesanan.add(p);
     }
+
+    public List<Pesanan> getDaftarPesanan() {
+        return new ArrayList<>(daftarPesanan);
+    }
+
+    // =============================
+    // === PEMBAYARAN SYSTEM =======
+    // =============================
 
     public void prosesPembayaran(Pesanan pesanan, Pembayaran metode) {
         try {
@@ -74,18 +136,4 @@ public class RestaurantSystem {
             System.out.println("⚠️ Error: " + e.getMessage());
         }
     }
-
-    // Getter biar bisa diakses dari main
-    public List<MenuItem> getDaftarMenu() {
-        return new ArrayList<>(daftarMenu);
-    }
-
-    public List<Pesanan> getDaftarPesanan() {
-        return new ArrayList<>(daftarPesanan);
-    }
-
-    public List<Pegawai> getDaftarPegawai() {
-    return new ArrayList<>(daftarPegawai);
-    }
-
 }

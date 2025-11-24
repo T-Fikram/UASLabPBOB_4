@@ -1,4 +1,4 @@
-package gui;
+package GUI;
 
 import model.*;
 import service.RestaurantSystem;
@@ -24,4 +24,7 @@ public class OrderGUI extends JFrame {
         setTitle("Order Menu - " + customer.getNama());
         setSize(600, 400);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE)
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        
+    }
+}

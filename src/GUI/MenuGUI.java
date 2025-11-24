@@ -1,95 +1,86 @@
 package GUI;
 
-import model.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
+
+// 🔥 PERBAIKAN: Menggunakan Import Wildcard untuk memastikan semua model/service ditemukan
+import model.*;
+import service.*;
 
 public class MenuGUI extends JFrame {
-    private JComboBox<MenuItem> cmbMenu;
-    private JTextField txtJumlah;
-    private JTextField txtCatatan;
-    private DefaultListModel<String> listModel;
-    private JList<String> listKeranjang;
-    private JButton btnTambah;
-    private JButton btnLanjut;
+    private RestaurantSystem system;
+    private JTable menuTable;
+    private DefaultTableModel tableModel;
 
-    private Pesanan pesanan;
+    private static final NumberFormat IDR_FORMAT = NumberFormat.getCurrencyInstance(new Locale("in", "ID"));
 
-    public MenuGUI(Pesanan pesanan, List<MenuItem> daftarMenu) {
-        super("Menu Makanan & Minuman");
-        this.pesanan = pesanan;
-
-        setSize(600, 400);
+    public MenuGUI(RestaurantSystem system) {
+        this.system = system;
+        
+        setTitle("Daftar Menu Restoran");
+        setSize(650, 450);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        
+        initComponents();
+        loadMenuData();
+    }
+
+    private void initComponents() {
         setLayout(new BorderLayout(10, 10));
-
-        // Panel Input menu
-        JPanel panelInput = new JPanel(new GridLayout(4, 2, 5, 5));
-        panelInput.setBorder(BorderFactory.createTitledBorder("Tambah ke Pesanan"));
-
-        panelInput.add(new JLabel("Pilih Menu:"));
-        cmbMenu = new JComboBox<>(daftarMenu.toArray(new MenuItem[0]));
-        panelInput.add(cmbMenu);
-
-        panelInput.add(new JLabel("Jumlah:"));
-        txtJumlah = new JTextField();
-        panelInput.add(txtJumlah);
-
-        panelInput.add(new JLabel("Catatan (opsional):"));
-        txtCatatan = new JTextField();
-        panelInput.add(txtCatatan);
-
-        btnTambah = new JButton("Tambah");
-        panelInput.add(btnTambah);
-
-        add(panelInput, BorderLayout.NORTH);
-
-        // Panel List Keranjang
-        listModel = new DefaultListModel<>();
-        listKeranjang = new JList<>(listModel);
-        add(new JScrollPane(listKeranjang), BorderLayout.CENTER);
-
-        // Panel Tombol Lanjut
-        btnLanjut = new JButton("Lanjut ke Pemesanan");
-        JPanel panelButton = new JPanel();
-        panelButton.add(btnLanjut);
-        add(panelButton, BorderLayout.SOUTH);
-
-        // Event Listener tombol tambah
-        btnTambah.addActionListener((ActionEvent e) -> {
-            try {
-                MenuItem item = (MenuItem) cmbMenu.getSelectedItem();
-                int jumlah = Integer.parseInt(txtJumlah.getText().trim());
-                String catatan = txtCatatan.getText().trim();
-
-                DetailPesanan detail = new DetailPesanan(item, jumlah, catatan);
-                pesanan.addDetail(detail);
-
-                listModel.addElement(detail.toString());
-                txtJumlah.setText("");
-                txtCatatan.setText("");
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this,
-                        "Jumlah harus berupa angka!", "Error Input", JOptionPane.ERROR_MESSAGE);
-            } catch (IllegalArgumentException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error Input", JOptionPane.ERROR_MESSAGE);
+        
+        String[] columnNames = {"No.", "Nama Menu", "Harga", "Tipe"};
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; 
             }
-        });
+        };
+        
+        menuTable = new JTable(tableModel);
+        menuTable.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        
+        JLabel title = new JLabel("DAFTAR MENU RESTORAN", SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 18));
+        add(title, BorderLayout.NORTH);
 
-        // Lanjut ke GUI berikut (OrderGUI)
-        btnLanjut.addActionListener((ActionEvent e) -> {
-            if (pesanan.getDaftarItem().isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Keranjang masih kosong!", "Tidak ada pesanan", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+        add(new JScrollPane(menuTable), BorderLayout.CENTER);
+        
+        // setVisible(true) dipindahkan ke constructor
+    }
+    
+    private void loadMenuData() {
+        tableModel.setRowCount(0); 
+        // Menggunakan interface List<MenuItem>
+        List<MenuItem> daftarMenu = system.getDaftarMenu();
+        
+        if (daftarMenu.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tidak ada data menu yang ditemukan.", "Informasi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-            new OrderGUI(pesanan).setVisible(true);
-            dispose();
-        });
+        int i = 1;
+        for (MenuItem item : daftarMenu) {
+            
+            // 🔥 PERBAIKAN: Makanan, getHarga(), dan getNama() sekarang dapat diakses
+            // Karena kita menggunakan import model.* dan service.*
+            
+            // Logika untuk menentukan Tipe (Makanan/Minuman)
+            String tipe = (item instanceof Makanan) ? "Makanan" : "Minuman"; 
+            
+            String hargaFormatted = IDR_FORMAT.format(item.getHarga());
+            String namaMenu = item.getNama();
+            
+            tableModel.addRow(new Object[]{
+                i++, 
+                namaMenu, 
+                hargaFormatted, 
+                tipe
+            });
+        }
     }
 }

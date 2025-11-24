@@ -14,7 +14,7 @@ public class DashboardGUI extends JFrame {
     private String role;
 
     // ⬅️ Tambah "role"
-    public DashboardPegawaiGUI(RestaurantSystem system, String username, String role) {
+    public DashboardGUI(RestaurantSystem system, String username, String role) {
         this.system = system;
         this.username = username;
         this.role = role;

@@ -1,7 +1,9 @@
 package GUI;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import model.*;
 import service.RestaurantSystem;
 
 public class DashboardGUI extends JFrame {
@@ -13,7 +15,6 @@ public class DashboardGUI extends JFrame {
     private String username;
     private String role;
 
-    // ⬅️ Tambah "role"
     public DashboardGUI(RestaurantSystem system, String username, String role) {
         this.system = system;
         this.username = username;
@@ -27,32 +28,26 @@ public class DashboardGUI extends JFrame {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        // Panel Customer (baru)
-        mainPanel.add(customerPanel(), "customer");
-
-        // Panel Pegawai
-        mainPanel.add(menuPanel(), "menu");
-        mainPanel.add(pelayanPanel(), "pelayan");
-        mainPanel.add(kokiPanel(), "koki");
-        mainPanel.add(kasirPanel(), "kasir");
-
-        add(mainPanel);
-
-        // Arahkan langsung sesuai role
         if (role.equalsIgnoreCase("customer")) {
+            mainPanel.add(customerPanel(), "customer");
             cardLayout.show(mainPanel, "customer");
         } else {
+            mainPanel.add(menuPegawaiPanel(), "menu"); 
+            mainPanel.add(pelayanPanel(), "pelayan");
+            mainPanel.add(kokiPanel(), "koki");
+            mainPanel.add(kasirPanel(), "kasir");
             cardLayout.show(mainPanel, "menu");
         }
 
-        setVisible(true);
+        add(mainPanel);
     }
 
     // =============================
-    // PANEL CUSTOMER (BARU)
+    // PANEL CUSTOMER (Lihat Menu)
     // =============================
     private JPanel customerPanel() {
         JPanel panel = new JPanel(new GridLayout(4, 1, 10, 10));
+        panel.setBorder(new EmptyBorder(50, 50, 50, 50));
 
         JLabel welcome = new JLabel("Selamat datang Customer: " + username, SwingConstants.CENTER);
 
@@ -65,8 +60,14 @@ public class DashboardGUI extends JFrame {
         panel.add(btnHistory);
         panel.add(btnLogout);
 
-        btnMenu.addActionListener(e -> JOptionPane.showMessageDialog(this, "(Nanti buka menu makanan)"));
-        btnHistory.addActionListener(e -> JOptionPane.showMessageDialog(this, "(Nanti buka riwayat)"));
+        // 🔥 PERBAIKAN SINTAKSIS DAN INTEGRASI MENU:
+        btnMenu.addActionListener(e -> {
+            new MenuGUI(system).setVisible(true); // Memanggil MenuGUI yang menampilkan menu dalam tabel
+        }); 
+        
+        btnHistory.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Silakan lihat riwayat pesanan (Fitur belum dibuat).", "Info", JOptionPane.INFORMATION_MESSAGE);
+        });
 
         btnLogout.addActionListener(e -> {
             dispose();
@@ -75,12 +76,15 @@ public class DashboardGUI extends JFrame {
 
         return panel;
     }
+    
+    // METHOD showMenuForCustomer() LAMA DIHAPUS KARENA SUDAH DIGANTI MenuGUI.java
 
     // =============================
-    // PANEL MENU PEGAWAI
+    // PANEL MENU PEGAWAI (NAVIGASI)
     // =============================
-    private JPanel menuPanel() {
+    private JPanel menuPegawaiPanel() {
         JPanel panel = new JPanel(new GridLayout(5, 1, 10, 10));
+        panel.setBorder(new EmptyBorder(50, 50, 50, 50));
 
         JLabel welcome = new JLabel("Selamat datang Pegawai: " + username, SwingConstants.CENTER);
 
@@ -107,65 +111,104 @@ public class DashboardGUI extends JFrame {
         return panel;
     }
 
-    // PANEL PELAYAN
+    // =============================
+    // PANEL PELAYAN (ORDER GUI)
+    // =============================
     private JPanel pelayanPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         JLabel title = new JLabel("PANEL PELAYAN", SwingConstants.CENTER);
-
+        title.setFont(new Font("SansSerif", Font.BOLD, 18));
+        
         JButton btnBuatPesanan = new JButton("Buat Pesanan Baru");
-        JButton btnKembali = new JButton("Kembali");
+        btnBuatPesanan.setBackground(Color.CYAN.darker());
+        btnBuatPesanan.setForeground(Color.WHITE);
+        
+        JButton btnKembali = new JButton("Kembali ke Menu Utama");
 
-        JPanel bottom = new JPanel();
+        JPanel bottom = new JPanel(new FlowLayout());
         bottom.add(btnBuatPesanan);
         bottom.add(btnKembali);
 
-        panel.add(title, BorderLayout.CENTER);
+        panel.add(title, BorderLayout.NORTH);
         panel.add(bottom, BorderLayout.SOUTH);
+        panel.add(new JLabel("Aksi: Membuka Order Point-of-Sale (POS).", SwingConstants.CENTER), BorderLayout.CENTER);
 
-        btnBuatPesanan.addActionListener(e -> JOptionPane.showMessageDialog(this, "👉 (Order GUI nanti)"));
+
+        // INTEGRASI: Buka OrderGUI
+        btnBuatPesanan.addActionListener(e -> {
+            Pegawai pelayanObj = system.findPegawaiByName(username); 
+            if(pelayanObj != null) {
+                 new OrderGUI(system, pelayanObj).setVisible(true); 
+            } else {
+                 JOptionPane.showMessageDialog(this, "Error: Objek Pegawai tidak ditemukan!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        
         btnKembali.addActionListener(e -> cardLayout.show(mainPanel, "menu"));
 
         return panel;
     }
 
-    // PANEL KOKI
+    // =============================
+    // PANEL KOKI (Placeholder)
+    // =============================
     private JPanel kokiPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
         JLabel title = new JLabel("PANEL KOKI", SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 18));
+        
         JButton btnUpdate = new JButton("Update Status Pesanan");
-        JButton btnKembali = new JButton("Kembali");
+        JButton btnKembali = new JButton("Kembali ke Menu Utama");
 
-        JPanel bottom = new JPanel();
+        JPanel bottom = new JPanel(new FlowLayout());
         bottom.add(btnUpdate);
         bottom.add(btnKembali);
 
-        panel.add(title, BorderLayout.CENTER);
+        panel.add(title, BorderLayout.NORTH);
         panel.add(bottom, BorderLayout.SOUTH);
+        panel.add(new JLabel("Aksi Koki: Tandai pesanan sebagai 'Selesai'.", SwingConstants.CENTER), BorderLayout.CENTER);
 
-        btnUpdate.addActionListener(e -> JOptionPane.showMessageDialog(this, "👉 (Update status nanti)"));
+
+        btnUpdate.addActionListener(e -> JOptionPane.showMessageDialog(this, "Akses Koki Dashboard (Fitur Belum Dibuat)", "Info", JOptionPane.INFORMATION_MESSAGE));
         btnKembali.addActionListener(e -> cardLayout.show(mainPanel, "menu"));
 
         return panel;
     }
 
-    // PANEL KASIR
+    // =============================
+    // PANEL KASIR (PAYMENT GUI)
+    // =============================
     private JPanel kasirPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         JLabel title = new JLabel("PANEL KASIR", SwingConstants.CENTER);
-        JButton btnBayar = new JButton("Proses Pembayaran");
-        JButton btnKembali = new JButton("Kembali");
+        title.setFont(new Font("SansSerif", Font.BOLD, 18));
 
-        JPanel bottom = new JPanel();
+        JButton btnBayar = new JButton("Proses Pembayaran");
+        btnBayar.setBackground(Color.ORANGE.darker());
+        btnBayar.setForeground(Color.WHITE);
+
+        JButton btnKembali = new JButton("Kembali ke Menu Utama");
+
+        JPanel bottom = new JPanel(new FlowLayout());
         bottom.add(btnBayar);
         bottom.add(btnKembali);
 
-        panel.add(title, BorderLayout.CENTER);
+        panel.add(title, BorderLayout.NORTH);
         panel.add(bottom, BorderLayout.SOUTH);
+        panel.add(new JLabel("Aksi Kasir: Memproses pembayaran pesanan selesai.", SwingConstants.CENTER), BorderLayout.CENTER);
 
-        btnBayar.addActionListener(e -> JOptionPane.showMessageDialog(this, "👉 (Payment GUI nanti)"));
+
+        // INTEGRASI: Buka PaymentGUI
+        btnBayar.addActionListener(e -> {
+             new PaymentGUI(system).setVisible(true);
+        });
+        
         btnKembali.addActionListener(e -> cardLayout.show(mainPanel, "menu"));
 
         return panel;

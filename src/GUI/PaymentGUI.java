@@ -17,7 +17,7 @@ public class PaymentGUI extends JFrame {
 
     private JLabel receiptLabel;
 
-    public PaymentReceiptGUI() {
+    public PaymentGUI() {
         setTitle("Payment & Receipt");
         setSize(500, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -149,6 +149,6 @@ public class PaymentGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        new PaymentReceiptGUI();
+        new PaymentGUI();
     }
 }

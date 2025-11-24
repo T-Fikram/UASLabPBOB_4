@@ -3,7 +3,7 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 
-public class PaymentReceiptGUI extends JFrame {
+public class PaymentGUI extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel mainPanel;

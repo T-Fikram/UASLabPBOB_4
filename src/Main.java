@@ -1,16 +1,13 @@
-import model.*;
-import service.*;
-
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import model.*;
+import service.*;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static RestaurantSystem system = new RestaurantSystem();
-    private static List<Customer> customerList = new ArrayList<>();
 
     public static void main(String[] args) {
         seedData();
@@ -58,9 +55,9 @@ public class Main {
         System.out.print("Masukkan password: ");
         String pass = scanner.nextLine();
 
-        int newId = 100 + customerList.size() + 1;
+        int newId = 100 + system.getDaftarCustomer().size() + 1;
         Customer cust = new Customer(newId, nama, pass);
-        customerList.add(cust);
+        system.tambahCustomer(cust);
 
         saveToDatabase("CUSTOMER|" + newId + "|" + nama + "|" + pass);
 
@@ -103,6 +100,7 @@ public class Main {
         system.tambahMenu(new Makanan("Mie Ayam", 18000, 1, "Main Course"));
         system.tambahMenu(new Minuman("Es Teh", 5000, "Gelas", "Dingin"));
         system.tambahMenu(new Minuman("Kopi Hitam", 8000, "Cangkir", "Panas"));
+        system.tambahCustomer(new Customer(101, "Tamu Meja", "tamu"));
     }
 
     // LOGIN 
@@ -130,7 +128,7 @@ public class Main {
         System.out.print("Password: ");
         String pass = scanner.nextLine();
 
-        for (Customer c : customerList) {
+        for (Customer c : system.getDaftarCustomer()) {
             if (c.getNama().equalsIgnoreCase(nama) && c.getPassword().equals(pass)) {
                 System.out.println("Login sukses sebagai Customer (" + c.getNama() + ")");
                 return c;
@@ -186,12 +184,12 @@ public class Main {
     private static void buatPesananByPelayan() {
         System.out.println("\n=== BUAT PESANAN BARU (oleh Pelayan) ===");
         System.out.println("Pilih customer terdaftar:");
-        for (Customer c : customerList) {
+        for (Customer c : system.getDaftarCustomer()) {
             System.out.println(c.getId() + " - " + c.getNama());
         }
         System.out.print("Masukkan ID customer: ");
         int idCust = readInt();
-        Customer cust = findCustomerById(idCust);
+        Customer cust = system.findCustomerById(idCust);
         if (cust == null) {
             System.out.println("Customer tidak ditemukan. Batalkan pembuatan pesanan.");
             return;
@@ -208,7 +206,7 @@ public class Main {
         }
         meja.setStatus(Meja.StatusMeja.TERISI);
 
-        Pesanan pesanan = new Pesanan(generatePesananId(), meja);
+        Pesanan pesanan = new Pesanan(system.generateNextPesananId(), meja);
 
         while (true) {
             System.out.println("\n--- Daftar Menu ---");
@@ -433,7 +431,7 @@ public class Main {
         }
         meja.setStatus(Meja.StatusMeja.TERISI);
 
-        Pesanan pesanan = new Pesanan(generatePesananId(), meja);
+        Pesanan pesanan = new Pesanan(system.generateNextPesananId(), meja);
 
         while (true) {
             List<MenuItem> daftar = system.getDaftarMenu();
@@ -486,13 +484,6 @@ public class Main {
         return val;
     }
 
-    private static Customer findCustomerById(int id) {
-        for (Customer c : customerList) {
-            if (c.getId() == id) return c;
-        }
-        return null;
-    }
-
     private static Pesanan findPesananById(int id) {
         List<Pesanan> list = system.getDaftarPesanan();
         for (Pesanan p : list) {
@@ -521,13 +512,4 @@ public class Main {
         System.out.println("----------------------------------------");
     }
 
-    // Generate ID pesanan sederhana
-    private static int generatePesananId() {
-        List<Pesanan> list = system.getDaftarPesanan();
-        int max = 0;
-        for (Pesanan p : list) {
-            if (p.getIdPesanan() > max) max = p.getIdPesanan();
-        }
-        return max + 1;
-    }
 }

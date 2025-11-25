@@ -60,15 +60,15 @@ src/
 ├── QRISPayment.java
 └── RestaurantSystem.java
 └── Gui/
-    ├── LoginFrame.java
-    ├── DashboardFrame.java
-    ├── KasirFrame.java
-    ├── KokiFrame.java
-    ├── PelayanFrame.java
-    ├── MenuFrame.java
-    ├── OrderFrame.java
-    ├── PaymentFrame.java
-    └── CustomerFrame.java
+    ├── LoginGUI.java
+    ├── DashboardGUI.java
+    ├── KasirGUI.java
+    ├── KokiGUI.java
+    ├── PelayanGUI.java
+    ├── MenuGUI.java
+    ├── OrderGUI.java
+    ├── PaymentGUI.java
+    └── CustomerGUI.java
 ```
 ---
 

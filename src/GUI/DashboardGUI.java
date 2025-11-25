@@ -71,7 +71,8 @@ public class DashboardGUI extends JFrame {
 
         btnLogout.addActionListener(e -> {
             dispose();
-            new LoginGUI(system);
+            LoginGUI login = new LoginGUI(system);
+            login.setVisible(true);
         });
 
         return panel;
@@ -105,7 +106,8 @@ public class DashboardGUI extends JFrame {
 
         btnLogout.addActionListener(e -> {
             dispose();
-            new LoginGUI(system);
+            LoginGUI login = new LoginGUI(system);
+            login.setVisible(true);
         });
 
         return panel;

@@ -1,23 +1,23 @@
 package service;
 
-import model.*;
 import java.util.ArrayList;
 import java.util.List;
+import model.*;
 
 public class RestaurantSystem {
 
     private List<MenuItem> daftarMenu;
     private List<Pegawai> daftarPegawai;
     private List<Pesanan> daftarPesanan;
-
-    // 🔥 Tambahan untuk login/register
     private List<User> daftarUser;
+    private List<Customer> daftarCustomer;
 
     public RestaurantSystem() {
         daftarMenu = new ArrayList<>();
         daftarPegawai = new ArrayList<>();
         daftarPesanan = new ArrayList<>();
         daftarUser = new ArrayList<>();
+        daftarCustomer = new ArrayList<>();
     }
 
     // =============================
@@ -47,6 +47,29 @@ public class RestaurantSystem {
 
     public List<User> getDaftarUser() {
         return daftarUser;
+    }
+
+    // =============================
+    // ====== CUSTOMER SYSTEM ====== // 🔥 SECTION BARU
+    // =============================
+
+    public void tambahCustomer(Customer c) {
+        if (c == null) {
+            System.out.println("❌ Customer tidak boleh null!");
+            return;
+        }
+        daftarCustomer.add(c);
+    }
+    
+    public List<Customer> getDaftarCustomer() {
+        return new ArrayList<>(daftarCustomer);
+    }
+    
+    public Customer findCustomerById(int id) {
+        for (Customer c : daftarCustomer) {
+            if (c.getId() == id) return c;
+        }
+        return null;
     }
 
     // =============================
@@ -92,6 +115,15 @@ public class RestaurantSystem {
         return new ArrayList<>(daftarPegawai);
     }
 
+    public Pegawai findPegawaiByName(String nama) {
+    for (Pegawai p : daftarPegawai) {
+        if (p.getNama().equalsIgnoreCase(nama)) {
+            return p;
+        }
+    }
+    return null;
+    }
+
     // =============================
     // ===== PESANAN SYSTEM ========
     // =============================
@@ -106,6 +138,28 @@ public class RestaurantSystem {
 
     public List<Pesanan> getDaftarPesanan() {
         return new ArrayList<>(daftarPesanan);
+    }
+
+    // 🔥 Pindahkan generatePesananId dari Main ke sini
+    public int generateNextPesananId() {
+        List<Pesanan> list = getDaftarPesanan();
+        int max = 0;
+        for (Pesanan p : list) {
+            if (p.getIdPesanan() > max) max = p.getIdPesanan();
+        }
+        return max + 1;
+    }
+    
+    // 🔥 BARU: Filter pesanan yang siap dibayar (untuk Kasir)
+    public List<Pesanan> getPesananSiapDibayar() {
+        List<Pesanan> siapBayar = new ArrayList<>();
+        for (Pesanan p : daftarPesanan) {
+            // Cek status "Selesai" DAN status meja masih "TERISI" (belum dibayar)
+            if ("Selesai".equalsIgnoreCase(p.getStatus()) && p.getMeja().getStatus() == Meja.StatusMeja.TERISI) {
+                siapBayar.add(p);
+            }
+        }
+        return siapBayar;
     }
 
     // =============================

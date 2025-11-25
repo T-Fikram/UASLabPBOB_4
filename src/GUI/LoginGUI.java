@@ -92,7 +92,8 @@ public class LoginGUI extends JFrame {
             }
 
             JOptionPane.showMessageDialog(this, "✅ Login Customer Berhasil!");
-            new DashboardGUI(system, user, "customer"); // kalau nanti ada DashboardCustomer tinggal ganti
+            DashboardGUI dash = new DashboardGUI(system, user, "customer");
+            dash.setVisible(true);
             dispose();
         });
 
@@ -144,7 +145,8 @@ public class LoginGUI extends JFrame {
             JOptionPane.showMessageDialog(this,
                     "✅ Login Pegawai Berhasil sebagai " + role);
 
-            new DashboardGUI(system, user, role);
+            DashboardGUI dash = new DashboardGUI(system, user, role);
+            dash.setVisible(true);
             dispose();
         });
 

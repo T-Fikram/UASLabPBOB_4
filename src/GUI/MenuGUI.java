@@ -1,15 +1,21 @@
 package GUI;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import javax.swing.SwingConstants;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-// 🔥 PERBAIKAN: Menggunakan Import Wildcard untuk memastikan semua model/service ditemukan
-import model.*;
-import service.*;
+import model.MenuItem;  // ✅ import spesifik
+import model.Makanan;
+import model.Minuman;
+import service.RestaurantSystem;
 
 public class MenuGUI extends JFrame {
     private RestaurantSystem system;
@@ -28,6 +34,7 @@ public class MenuGUI extends JFrame {
         
         initComponents();
         loadMenuData();
+        setVisible(true); // Jangan lupa tampilkan frame
     }
 
     private void initComponents() {
@@ -49,14 +56,11 @@ public class MenuGUI extends JFrame {
         add(title, BorderLayout.NORTH);
 
         add(new JScrollPane(menuTable), BorderLayout.CENTER);
-        
-        // setVisible(true) dipindahkan ke constructor
     }
     
     private void loadMenuData() {
         tableModel.setRowCount(0); 
-        // Menggunakan interface List<MenuItem>
-        List<MenuItem> daftarMenu = system.getDaftarMenu();
+        List<MenuItem> daftarMenu = system.getDaftarMenu(); // ✅ Sekarang jelas MenuItem dari model
         
         if (daftarMenu.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Tidak ada data menu yang ditemukan.", "Informasi", JOptionPane.WARNING_MESSAGE);
@@ -65,13 +69,7 @@ public class MenuGUI extends JFrame {
 
         int i = 1;
         for (MenuItem item : daftarMenu) {
-            
-            // 🔥 PERBAIKAN: Makanan, getHarga(), dan getNama() sekarang dapat diakses
-            // Karena kita menggunakan import model.* dan service.*
-            
-            // Logika untuk menentukan Tipe (Makanan/Minuman)
             String tipe = (item instanceof Makanan) ? "Makanan" : "Minuman"; 
-            
             String hargaFormatted = IDR_FORMAT.format(item.getHarga());
             String namaMenu = item.getNama();
             
